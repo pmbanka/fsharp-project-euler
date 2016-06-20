@@ -76,12 +76,14 @@ let toPaddedString n =
         | _ -> 0
     tmp.PadLeft (tmp.Length + padding, '0')
     
-let parseNumber n =
-    if n = 0 then
+let inline parseNumber n =
+    if n = LanguagePrimitives.GenericZero then
         "zero"
     else
         let padded = toPaddedString n
-        let names = [""; "thousand"; "million"; "billion"]
+        let tripletsNumber = padded.Length / 3
+        let names = [""; "thousand"; "million"; "billion"; "trillion"; "quadrillion"; "quintillion" ]
+        if names.Length < tripletsNumber then failwith "Input is too long"
         let triplets = 
             seq { 0 .. padded.Length / 3 - 1 }
             |> Seq.map (fun i -> padded.Substring (3*i, 3))
@@ -94,6 +96,8 @@ let parseNumber n =
             |> Seq.rev
         let ret = String.Join (" ", merged)
         ret.Trim ()
+     
+parseNumber 99999999999999999999I
         
 let eulerResult =
     seq { 1 .. 1000 }
