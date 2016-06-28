@@ -4,7 +4,7 @@ let getSumOfProperDivisors (n:int) =
    let max = (float >> Math.Sqrt >> int) n
    let mutable sum = 1
    for i in 2 .. max do
-       if n % i =0 then
+       if n % i = 0 then
            sum <- sum + i
            let d = n / i
            if d <> i then
