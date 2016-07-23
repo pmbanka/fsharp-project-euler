@@ -33,4 +33,3 @@ all
 |> Seq.where (isTruncatable all)
 |> Seq.take 11
 |> Seq.sum
-
