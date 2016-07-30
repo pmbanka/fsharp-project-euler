@@ -3,11 +3,11 @@ open System
 module List = 
     // From: http://stackoverflow.com/questions/286427/calculating-permutations-in-f
     let rec insertions x = function
-        | []             -> [[x]]
-        | (y :: ys) as l -> (x::l)::(List.map (fun x -> y::x) (insertions x ys))
+        | [] -> [[x]]
+        | (y::ys) as l -> (x::l)::(List.map (fun x -> y::x) (insertions x ys))
 
     let rec permutations = function
-        | []      -> seq [ [] ]
+        | [] -> seq [ [] ]
         | x :: xs -> Seq.concat (Seq.map (insertions x) (permutations xs))
 
 let isCurious l =
@@ -16,7 +16,6 @@ let isCurious l =
         match list with
         | a::b::c::_ ->
             let num = a*100 + b*10 + c
-            printfn "Checking %d" num
             if num % (List.head divs) = 0 then
                 loop (List.tail list) (List.tail divs)
             else
@@ -24,15 +23,13 @@ let isCurious l =
         | _ -> true
     loop l divisors
 
-let l = [1; 2; 3; 4; 5; 6; 7; 8; 9; 0]
-l |> isCurious
-match l with
-| a::b::c::tail -> true
-| _ -> false
+let toInt64 l =
+    List.rev l 
+    |> Seq.zip (Seq.initInfinite (fun x -> pown 10 x))
+    |> Seq.map (fun (t1, t2) -> int64 t1 * int64 t2)
+    |> Seq.sum
 
-
-
-
-let input = [0 .. 9]
-List.permutations input
-|> Seq.length
+List.permutations [0..9]
+|> Seq.where isCurious
+|> Seq.map toInt64
+|> Seq.sum
